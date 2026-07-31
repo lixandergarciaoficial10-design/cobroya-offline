@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">Chargement de l'application...</div>
     
     <!-- Caja fuerte para tu código Python -->
     <textarea id="codigo_python" style="display: none;">
@@ -4437,23 +4437,32 @@ elif menu == "Configuración":
     <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.js"></script>
     
     <script>
-      // Esperamos a que la ventana cargue por completo para evitar errores de referencia
-      window.addEventListener("load", function() {
-        const miCodigo = document.getElementById("codigo_python").value;
+      // Función que revisa cada milisegundo si el motor ya se descargó
+      function iniciarStlite() {
+        if (typeof stlite !== 'undefined') {
+          const miCodigo = document.getElementById("codigo_python").value;
+          document.getElementById("root").innerHTML = ""; // Limpiamos el texto de carga
 
-        stlite.mount(
-          {
-            requirements: [
-              "streamlit", "pandas", "plotly", "st-supabase-connection",
-              "supabase", "fpdf2", "requests", "Pillow", "groq", "qrcode",
-              "streamlit-geolocation", "streamlit-js-eval", "folium",
-              "streamlit-folium", "pytz"
-            ],
-            mainScriptData: miCodigo
-          },
-          document.getElementById("root")
-        );
-      });
+          stlite.mount(
+            {
+              requirements: [
+                "streamlit", "pandas", "plotly", "st-supabase-connection",
+                "supabase", "fpdf2", "requests", "Pillow", "groq", "qrcode",
+                "streamlit-geolocation", "streamlit-js-eval", "folium",
+                "streamlit-folium", "pytz"
+              ],
+              mainScriptData: miCodigo
+            },
+            document.getElementById("root")
+          );
+        } else {
+          // Si todavía no carga el script externo, reintenta en medio segundo
+          setTimeout(iniciarStlite, 500);
+        }
+      }
+
+      // Arrancamos la comprobación cuando cargue la página
+      window.addEventListener("load", iniciarStlite);
     </script>
   </body>
 </html>
