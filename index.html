@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CobroYa - Modo Offline</title>
-    <!-- Estilos oficiales -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.36.0/build/stlite.css" />
   </head>
   <body>
-    <div id="root" style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; background-color: #f8f9fa;">
-      <h3>Cargando sistema offline de CobroYa...</h3>
+    <div id="root" style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+      <h2>Iniciando CobroYa Offline...</h2>
     </div>
-    
-    <!-- Caja con tu código de Python -->
-    <textarea id="codigo_python" style="display: none;">
+
+    <textarea id="codigo_python" style="display:none;">
+
+import streamlit as st
+import pandas as pd
+import pytz
 
 # PEGA AQUÍ TU CÓDIGO EXACTO DE PYTHON
 import streamlit as st
@@ -4431,14 +4433,16 @@ elif menu == "Configuración":
 
     </textarea>
 
-    <!-- Motor de Stlite actualizado a versión estable -->
-    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.36.0/build/stlite.js"></script>
-    
+    <!-- Cargador dinámico seguro para evitar bloqueos de referencia -->
     <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const codigoPython = document.getElementById("codigo_python").value;
-
-        try {
+      (function() {
+        var script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/@stlite/mountable@0.36.0/build/stlite.js";
+        script.async = false;
+        script.onload = function() {
+          const codigoPython = document.getElementById("codigo_python").value;
+          document.getElementById("root").innerHTML = ""; // Limpiar pantalla de carga
+          
           stlite.mount(
             {
               requirements: [
@@ -4451,11 +4455,12 @@ elif menu == "Configuración":
             },
             document.getElementById("root")
           );
-        } catch (error) {
-          console.error("Error al montar Stlite:", error);
-          document.getElementById("root").innerHTML = "<h3 style='color:red; text-align:center;'>Error al inicializar el entorno. Revisa la consola.</h3>";
-        }
-      });
+        };
+        script.onerror = function() {
+          document.getElementById("root").innerHTML = "<h3 style='color:red;'>Error crítico: No se pudo cargar el motor de Stlite desde el servidor externo.</h3>";
+        };
+        document.head.appendChild(script);
+      })();
     </script>
   </body>
 </html>
