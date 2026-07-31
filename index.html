@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CobroYa - Modo Offline</title>
-    <!-- Estilos de Stlite -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.css" />
+    <!-- Estilos oficiales -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.36.0/build/stlite.css" />
   </head>
   <body>
-    <div id="root">Chargement de l'application...</div>
+    <div id="root" style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; background-color: #f8f9fa;">
+      <h3>Cargando sistema offline de CobroYa...</h3>
+    </div>
     
-    <!-- Caja fuerte para tu código Python -->
+    <!-- Caja con tu código de Python -->
     <textarea id="codigo_python" style="display: none;">
 
-import streamlit as st
-import pandas as pd
-import pytz
-
-# PEGA AQUÍ TU CÓDIGO EXACTO
+# PEGA AQUÍ TU CÓDIGO EXACTO DE PYTHON
 import streamlit as st
 import sys
 import pandas as pd
@@ -4433,16 +4431,14 @@ elif menu == "Configuración":
 
     </textarea>
 
-    <!-- Cargamos el motor de Stlite -->
-    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.js"></script>
+    <!-- Motor de Stlite actualizado a versión estable -->
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.36.0/build/stlite.js"></script>
     
     <script>
-      // Función que revisa cada milisegundo si el motor ya se descargó
-      function iniciarStlite() {
-        if (typeof stlite !== 'undefined') {
-          const miCodigo = document.getElementById("codigo_python").value;
-          document.getElementById("root").innerHTML = ""; // Limpiamos el texto de carga
+      window.addEventListener("DOMContentLoaded", () => {
+        const codigoPython = document.getElementById("codigo_python").value;
 
+        try {
           stlite.mount(
             {
               requirements: [
@@ -4451,18 +4447,15 @@ elif menu == "Configuración":
                 "streamlit-geolocation", "streamlit-js-eval", "folium",
                 "streamlit-folium", "pytz"
               ],
-              mainScriptData: miCodigo
+              mainScriptData: codigoPython
             },
             document.getElementById("root")
           );
-        } else {
-          // Si todavía no carga el script externo, reintenta en medio segundo
-          setTimeout(iniciarStlite, 500);
+        } catch (error) {
+          console.error("Error al montar Stlite:", error);
+          document.getElementById("root").innerHTML = "<h3 style='color:red; text-align:center;'>Error al inicializar el entorno. Revisa la consola.</h3>";
         }
-      }
-
-      // Arrancamos la comprobación cuando cargue la página
-      window.addEventListener("load", iniciarStlite);
+      });
     </script>
   </body>
 </html>
