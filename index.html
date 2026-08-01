@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CobroYa - Modo Offline</title>
+    <!-- Estilos de Stlite -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.36.0/build/stlite.css" />
   </head>
   <body>
@@ -11,19 +12,14 @@
       <h2>Iniciando CobroYa Offline...</h2>
     </div>
 
+    <!-- CÓDIGO PYTHON CORREGIDO -->
     <textarea id="codigo_python" style="display:none;">
 
-import streamlit as st
-import pandas as pd
-import pytz
-
-# PEGA AQUÍ TU CÓDIGO EXACTO DE PYTHON
 import streamlit as st
 import sys
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from st_supabase_connection import SupabaseConnection
 from datetime import datetime
 import requests
 import base64
@@ -31,17 +27,22 @@ from PIL import Image
 import io
 import time
 from fpdf import FPDF
-from groq import Groq
 from io import BytesIO
-import qrcode # Asegúrate de tener: pip install qrcode
-import base64
-from fpdf import FPDF
-from datetime import datetime
-import streamlit as st
+import qrcode
 import re
-from st_supabase_connection import SupabaseConnection
+import pytz
 
-# --- INICIALIZACIÓN DE VARIABLES PARA EL MAPA ---
+# --- CONFIGURACIÓN DE CONEXIÓN CON SUPABASE VÍA REST (REQUESTS) ---
+SUPABASE_URL = "https://dqwqrzbskjzxjgihqrzc.supabase.co"
+SUPABASE_KEY = "sb_secret_hy23qdtMAhN2KjDdD2jybA_5hCSPXth"
+
+HEADERS = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "Content-Type": "application/json"
+}
+
+# --- INICIALIZACIÓN DE VARIABLES PARA EL MAPA Y SESIÓN ---
 if "mostrar_mapa" not in st.session_state:
     st.session_state.mostrar_mapa = False
 if "refresh_key" not in st.session_state:
@@ -53,10 +54,7 @@ if "consulta_activa" not in st.session_state:
 if "datos_ruta_consultados" not in st.session_state:
     st.session_state.datos_ruta_consultados = []
 
-import streamlit as st
-from st_supabase_connection import SupabaseConnection
-
-# 1. CONFIGURACIÓN INICIAL Y CONEXIÓN
+# CONFIGURACIÓN INICIAL
 st.set_page_config(
     page_title="CobroYa", 
     page_icon="https://dqwqrzbskjzxjgihqrzc.supabase.co/storage/v1/object/public/logo/Adobe%20Express%20-%20file.png",
@@ -64,26 +62,19 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# LIMPIEZA VISUAL (SIN TOCAR EL MENÚ DE HAMBURGUESA)
+# LIMPIEZA VISUAL
 st.markdown("""
     <style>
-        /* Quita la barra decorativa superior pero deja los botones funcionales */
         header[data-testid="stHeader"] {
-            background-color: rgba(0,0,0,0); /* La hace transparente */
+            background-color: rgba(0,0,0,0);
             color: transparent;
         }
-        
-        /* Quita el pie de página "Made with Streamlit" */
         footer {visibility: hidden;}
-        
-        /* Ajusta el espacio para que el contenido suba hasta arriba */
         .block-container {
             padding-top: 1rem;
         }
     </style>
     """, unsafe_allow_html=True)
-
-conn = st.connection("supabase", type=SupabaseConnection)
 
 # Inicializar estados de sesión
 if "authenticated" not in st.session_state:
@@ -4447,7 +4438,7 @@ elif menu == "Configuración":
             {
               requirements: [
                 "pandas", "plotly",
-                "supabase", "fpdf2", "requests", "Pillow", "groq", "qrcode",
+                "fpdf2", "requests", "Pillow", "qrcode",
                 "folium",
                 "streamlit-folium", "pytz"
               ],
