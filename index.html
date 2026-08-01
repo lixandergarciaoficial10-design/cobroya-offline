@@ -4425,6 +4425,7 @@ elif menu == "Configuración":
     </textarea>
 
     <!-- Cargador dinámico seguro para evitar bloqueos de referencia -->
+    <!-- CARGADOR DINÁMICO SEGURO DE STLITE -->
     <script>
       (function() {
         var script = document.createElement('script');
@@ -4432,26 +4433,32 @@ elif menu == "Configuración":
         script.async = false;
         script.onload = function() {
           const codigoPython = document.getElementById("codigo_python").value;
-          document.getElementById("root").innerHTML = ""; // Limpiar pantalla de carga
+          document.getElementById("root").innerHTML = ""; // Limpiar mensaje de carga
           
           stlite.mount(
             {
+              // Crea el archivo real dentro del sistema de archivos virtual
+              entrypoint: "streamlit_app.py",
+              files: {
+                "streamlit_app.py": codigoPython
+              },
+              // LIBRERÍAS PERMITIDAS Y COMPATIBLES CON PYODIDE
               requirements: [
-                "pandas", "plotly",
-                "fpdf2", "requests", "Pillow", "qrcode",
-                "folium",
-                "streamlit-folium", "pytz"
-              ],
-              mainScriptData: codigoPython
+                "pandas", 
+                "plotly", 
+                "fpdf2", 
+                "requests", 
+                "Pillow", 
+                "qrcode", 
+                "pytz"
+              ]
             },
             document.getElementById("root")
           );
         };
         script.onerror = function() {
-          document.getElementById("root").innerHTML = "<h3 style='color:red;'>Error crítico: No se pudo cargar el motor de Stlite desde el servidor externo.</h3>";
+          document.getElementById("root").innerHTML = "<h3 style='color:red;'>Error al cargar el motor de Stlite.</h3>";
         };
         document.head.appendChild(script);
       })();
     </script>
-  </body>
-</html>
