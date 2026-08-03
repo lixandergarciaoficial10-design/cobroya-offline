@@ -245,13 +245,11 @@ if not st.session_state.authenticated:
                 email = st.text_input("Correo electrónico", placeholder="ejemplo@correo.com", key="login_email")
                 password = st.text_input("Contraseña", type="password", placeholder="Tu contraseña", key="login_pass")
                 
-                col_check, col_link = st.columns([1, 1])
-                with col_check:
-                    st.checkbox("Recordarme")
-                with col_link:
-                    if st.button("¿Olvidaste tu contraseña?", key="btn_forgot"):
-                        st.session_state.page = "forgot"
-                        st.rerun()
+                # Elementos apilados verticalmente para evitar StreamlitAPIException por anidamiento de columnas
+                st.checkbox("Recordarme")
+                if st.button("¿Olvidaste tu contraseña?", key="btn_forgot"):
+                    st.session_state.page = "forgot"
+                    st.rerun()
                 
 # --- LÓGICA DE INICIO DE SESIÓN CORREGIDA (Lixander Edition) ---
                 if st.button("Iniciar sesión", type="primary", use_container_width=True):
